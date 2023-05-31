@@ -1,38 +1,245 @@
-.App {
-  text-align: center;
+@import url("https://fonts.googleapis.com/css2?family=Signika&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+  text-decoration: none !important;
+  font-family: "Signika", sans-serif;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+html {
+  font-size: 16px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+body {
+  background-color: rgb(27, 27, 27) !important;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.outlet {
+  width: 100%;
+}
+
+input[type="text"] {
+  outline: none;
+  background-color: transparent;
+  border: none;
+  width: 50vw;
+  border-bottom: 2px solid #fd0003;
+  color: #d5d7d5;
+  font-size: 1rem;
+}
+
+.search-box{
+  width: 50vw;
+  height: 200px;
+  overflow-y: scroll;
+  background-color: rgb(104,18,0);
+}
+
+input::placeholder {
+  color: rgb(213, 215, 213);
+  font-size: 1rem;
+}
+
+.scrollbody {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbody::-webkit-scrollbar {
+  display: none;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 20;
+}
+
+.drawer-genre {
+  position: absolute;
+  top: 130px;
+  height: calc(100vh - 130px);
+  width: 100%;
+  overflow-y: scroll;
+}
+
+.seeDown {
+  margin-bottom: 60px;
+}
+
+.media-scroller {
+  display: grid;
+  gap: 1rem;
+  grid-auto-flow: column;
+  grid-auto-columns: 26%;
+
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+.radius {
+  border-radius: 5px;
+}
+
+.inline {
+  inline-size: 100%;
+  aspect-ratio: 9 / 13;
+}
+
+.snaps {
+  scroll-snap-type: inline mandatory;
+  scroll-padding-inline: 10px;
+}
+
+.snaps > * {
+  scroll-snap-align: start;
+}
+
+.md-image {
+  height: 250px;
+}
+
+.scroll-cast {
+  display: grid;
+  gap: 1rem;
+  grid-auto-flow: column;
+  grid-auto-columns: 18%;
+
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+.inline-cast {
+  inline-size: 100%;
+  border-radius: 50%;
+  aspect-ratio: 10/10;
+}
+
+.scroll-video {
+  display: grid;
+  gap: 1rem;
+  grid-auto-flow: column;
+  grid-auto-columns: 28%;
+
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+.inline-video {
+  inline-size: 100%;
+  border-radius: 10px;
+  aspect-ratio: 16 / 9;
+  border: 1px solid #fd0003;
+  cursor: pointer;
+}
+
+.inline-image {
+  inline-size: 100%;
+  border-radius: 10px;
+  aspect-ratio: 16 / 9;
+  cursor: pointer;
+}
+
+.modalbox {
+  position: fixed;
+  width: 100%;
+  height: calc(100vh - 70px);
+  margin-top: 70px;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  transition: all 0.3s;
+}
+
+.modalbox2 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: black;
+  opacity: 0.7;
+  width: 100%;
+  height: calc(100vh - 70px);
+  margin-top: 70px;
+}
+
+.contentbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  margin-top: 4rem;
+  height: calc(100vh - 70px);
+  margin-top: 70px;
+}
+
+.media-card {
+  height: 200px;
+}
+
+@media (min-width: 992px) {
+  .outlet {
+    width: calc(100% - 200px);
+  }
+
+  .media-scroller {
+    grid-auto-columns: 12% !important;
+  }
+
+  .seeDown {
+    margin-bottom: 0px;
+  }
+
+  .scroll-cast {
+    grid-auto-columns: 8% !important;
+  }
+
+  .scroll-video {
+    grid-auto-columns: 18% !important;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+@media (min-width: 768px) {
+  input[type="text"] {
+    width: 350px;
+    font-size: 1.1rem;
+    padding-left: 3px;
   }
-  to {
-    transform: rotate(360deg);
+
+  .search-box{
+    width: 350px;
+    height: 200px;
+    overflow-y: scroll;
+  }
+
+  .media-scroller {
+    grid-auto-columns: 18%;
+  }
+
+  input::placeholder {
+    font-size: 1.1rem;
+  }
+
+  .md-image {
+    height: 400px;
+  }
+
+  .scroll-cast {
+    grid-auto-columns: 12%;
+  }
+
+  .scroll-video {
+    grid-auto-columns: 20%;
+  }
+
+  .media-card {
+    height: 300px;
   }
 }
