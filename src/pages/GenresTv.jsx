@@ -11,24 +11,24 @@ const GenresTv = () => {
   const { genretv_id } = useParams();
   const observer = useRef();
   const [genreList, setGenreList] = useState([]);
-  const [newGenreList, setNewGenreList] = useState([]);
   const [page, setPage] = useState(1);
   const [fetching, setFetching] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [error, setError] = useState(null);
   const { genres } = useFetchHook("genre/tv/list");
 
   const lastMovie = useCallback(
     (node) => {
-      if (!node) return;
+      if (fetching) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
+        if (entries[0].isIntersecting && hasMore) {
           setPage((prev) => prev + 1);
-          setNewGenreList([...newGenreList, ...genreList]);
         }
       });
-      observer.current.observe(node);
+      if (node) observer.current.observe(node);
     },
-    [newGenreList, genreList]
+    [fetching, hasMore]
   );
 
   useEffect(() => {
@@ -38,9 +38,12 @@ const GenresTv = () => {
         const { data } = await axios.get(
           `${BASE_URL}/discover/tv?api_key=${API_KEY}&sort_by=popularity.desc&include_video=false&page=${page}&with_genres=${genretv_id}`
         );
-        setGenreList(data.results);
+        setGenreList((prevResults) => {
+          return [...new Set([...prevResults, ...data.results])];
+        });
+        setHasMore(data.results.length > 0);
       } catch (err) {
-        console.log(err);
+        setError(err);
       } finally {
         setFetching(false);
       }
@@ -49,25 +52,25 @@ const GenresTv = () => {
   }, [genretv_id, page]);
 
   const genreName = genres.find((each) => each.id.toString() === genretv_id);
-  const allGenreList = [...newGenreList, ...genreList];
 
   return (
     <div className="text-white w-100 px-2 py-2">
       <h3 style={{ color: "#ffa101" }}>{genreName?.name}</h3>
-      {fetching && <Spinner />}
       <Row className="gx-3 gy-4">
-        {allGenreList.map((each, index) => (
+        {genreList.map((each, index) => (
           <Col
             xs={4}
             md={4}
             xl={2}
             key={index}
-            ref={index === allGenreList.length - 1 ? lastMovie : null}
+            ref={index === genreList.length - 1 ? lastMovie : null}
           >
             <MediaCard {...each} startpoint={"tv"} />
           </Col>
         ))}
       </Row>
+      {fetching && <Spinner />}
+      {error && <span>{error.message}</span>}
     </div>
   );
 };

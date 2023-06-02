@@ -6,26 +6,26 @@ import PagesStart from "../components/PagesStart";
 import Spinner from "../components/Spinner";
 
 const Discover = () => {
-  const { data, fetching, data2, lastMovie } = useFetch("discover/movie");
-  const allData = [...data2, ...data];
+  const { data, fetching, error, lastMovie } = useFetch("discover/movie");
 
   return (
     <div className="text-white w-100 py-2 px-2">
       <PagesStart data={"Discover Movies"} />
-      {fetching && <Spinner />}
       <Row className="gx-3 gy-4">
-        {allData.map((each, index) => (
+        {data.map((each, index) => (
           <Col
             xs={4}
             md={4}
             xl={2}
             key={index}
-            ref={index === allData.length - 1 ? lastMovie : null}
+            ref={index === data.length - 1 ? lastMovie : null}
           >
             <MediaCard {...each} startpoint={"movie"} />
           </Col>
         ))}
       </Row>
+      {fetching && <Spinner />}
+      {error && <span>{error.message}</span>}
     </div>
   );
 };

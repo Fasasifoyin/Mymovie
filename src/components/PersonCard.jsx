@@ -20,7 +20,7 @@ const PersonCard = ({ id, name, gender, profile_path }) => {
         </div>
       </Link>
       <div className="d-flex justify-content-between px-1 w-100">
-        <span>{name ? name : "Unknown"}</span>
+        <span className="text-break">{name ? name : "Unknown"}</span>
         <span>{gender === 1 ? "Female" : "Male"}</span>
       </div>
     </div>

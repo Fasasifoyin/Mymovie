@@ -6,26 +6,26 @@ import PagesStart from "../components/PagesStart";
 import Spinner from "../components/Spinner";
 
 const TrendPeople = () => {
-  const { data, fetching, data2, lastMovie } = useFetch("trending/person/day");
-  const allData = [...data2, ...data];
+  const { data, fetching, error, lastMovie } = useFetch("trending/person/day");
 
   return (
     <div className="text-white w-100 px-2 py-2">
       <PagesStart data={"Trending People"} />
-      {fetching && <Spinner />}
-      <Row className="gx-3 gy-4  mx-auto">
-        {allData.map((each, index) => (
+      <Row className="gx-3 gy-4">
+        {data.map((each, index) => (
           <Col
             xs={4}
             md={4}
             xl={2}
             key={index}
-            ref={index === allData.length - 1 ? lastMovie : null}
+            ref={index === data.length - 1 ? lastMovie : null}
           >
             <PersonCard {...each} />
           </Col>
         ))}
       </Row>
+      {fetching && <Spinner />}
+      {error && <span>{error.message}</span>}
     </div>
   );
 };

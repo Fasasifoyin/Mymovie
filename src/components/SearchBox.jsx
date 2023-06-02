@@ -8,28 +8,27 @@ import Spinner from "./Spinner";
 const SearchBox = ({ search, setSearch }) => {
   const observer = useRef();
   const [searchResults, setSearchResults] = useState([]);
-  const [newSearchResults, setNewSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
 
   const lastMovie = useCallback(
     (node) => {
-      if (!node) return;
+      if (loading) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
+        if (entries[0].isIntersecting && hasMore) {
           setPage((prev) => prev + 1);
-          setNewSearchResults([...searchResults, ...newSearchResults]);
         }
       });
-      observer.current.observe(node);
+      if (node) observer.current.observe(node);
     },
-    [searchResults, newSearchResults]
+    [loading, hasMore]
   );
 
   useEffect(() => {
     setSearchResults([]);
-    setNewSearchResults([]);
     setPage(1);
   }, [search]);
 
@@ -41,9 +40,12 @@ const SearchBox = ({ search, setSearch }) => {
           const { data } = await axios.get(
             `${BASE_URL}/search/multi?api_key=${API_KEY}&query=${search}&page=${page}`
           );
-          setSearchResults(data.results);
+          setSearchResults((prevResults) => {
+            return [...new Set([...prevResults, ...data.results])];
+          });
+          setHasMore(data.results.length > 0);
         } catch (err) {
-          console.log(err);
+          setError(err);
         } finally {
           setLoading(false);
         }
@@ -55,7 +57,6 @@ const SearchBox = ({ search, setSearch }) => {
     };
   }, [search, page]);
 
-  const allSearchResults = [...newSearchResults, ...searchResults];
   const personNull =
     "https://www.freeiconspng.com/thumbs/person-icon/clipart--person-icon--cliparts-15.png";
   const movieNull =
@@ -69,9 +70,9 @@ const SearchBox = ({ search, setSearch }) => {
     >
       <Container>
         <div className="d-flex flex-column gap-3">
-          {allSearchResults.length > 0 ? (
+          {searchResults.length > 0 ? (
             <>
-              {allSearchResults.map((each, index) => (
+              {searchResults.map((each, index) => (
                 <Link
                   key={index}
                   to={
@@ -85,9 +86,7 @@ const SearchBox = ({ search, setSearch }) => {
                 >
                   <div
                     className="d-flex gap-2"
-                    ref={
-                      index === allSearchResults.length - 1 ? lastMovie : null
-                    }
+                    ref={index === searchResults.length - 1 ? lastMovie : null}
                   >
                     <div
                       style={{
@@ -131,13 +130,14 @@ const SearchBox = ({ search, setSearch }) => {
           )}
         </div>
         <div className="text-center mt-2">
-          {searchResults.length === 0 && newSearchResults.length > 1 && (
+          {!hasMore && searchResults.length > 0 && (
             <span className="text-white text-break small">
               No more results for {search}
             </span>
           )}
         </div>
         {loading && <Spinner />}
+        {error && <span>{error.message}</span>}
       </Container>
     </div>
   );
